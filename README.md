@@ -69,9 +69,9 @@ pip install -r requirements.txt
 
 ### 4. Configure Environment Variables
 
-Create a file named `.env` inside the `mysql_agent/` directory and fill it with your credentials.
+Create a file named `.env` inside the `adk_bq_agent/` directory and fill it with your credentials.
 
-**`mysql_agent/.env` Example:**
+**`adk_bq_agent/.env` Example:**
 
 ```env
 # --- Vertex AI Settings ---
@@ -94,7 +94,7 @@ BIGQUERY_DATASET_ID="your-bigquery-dataset-id" # The Dataset ID to connect to (e
 
 ### 5. Generate the Database Context
 
-Run the `generate_bigquery_prompt.py` script from the project's root directory. It will connect to your MySQL database, collect metadata and samples, and then use Gemini to generate a complete and optimized prompt file.
+Run the `generate_bigquery_prompt.py` script from the project's root directory. It will connect to your BigQuery database, collect metadata and samples, and then use Gemini to generate a complete and optimized prompt file.
 
 # Make sure your current directory is the project root
 ```
