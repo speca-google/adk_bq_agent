@@ -1,230 +1,408 @@
 ## OVERVIEW:
-This database appears to be a comprehensive procurement and supply chain management system, tracking the lifecycle of goods and services from initial request to final contract and payment. It encompasses various stages of the purchasing process: `requisicoes` (requisitions) initiate the need for a product or service, potentially leading to `cotacoes` (quotations) from suppliers. Once a quote is accepted, `pedidos` (purchase orders) are issued. Finally, `contratos` (contracts) manage the long-term agreements and relationships with suppliers, specifying terms, pricing, and delivery schedules for contracted items. The system provides detailed information on products, suppliers, pricing, quantities, dates, and status at each stage, facilitating end-to-end visibility and management of procurement activities.
+This database appears to model a Learning Management System (LMS), similar to Moodle, based on the `mdl_` prefix for all table names and their structures. It tracks various aspects of online learning, including user information (`mdl_user`), courses (`mdl_course`, `mdl_course_categories`), enrollments (`mdl_enrol`, `mdl_user_enrolments`), assignments (`mdl_assign`), submissions (`mdl_assign_submission`), grades (`mdl_grade_grades`, `mdl_grade_items`), and course progress/completion (`mdl_course_completions`, `mdl_course_modules`, `mdl_course_modules_completion`). The system seems designed to manage student and instructor interactions, assess learning, and track educational progress within different courses and modules.
 
 ## DATABASE INFORMATION
-
 ### Database Schema:
 
-### Table: `contratos`
+### Table: `mdl_assign`
 - Table Description: No description available.
-- `frequencia_entrega_faturamento_item`: **STRING**
-- `quantidade_contratada_item`: **INTEGER**
-- `nome_produto_contratado`: **STRING**
-- `unidade_medida_item`: **STRING**
-- `sequencial_item_contrato`: **INTEGER**
-- `observacoes_gerais_contrato`: **STRING**
-- `tipo_contrato`: **STRING**
-- `preco_fixo_unitario_item`: **FLOAT**
-- `data_inicio_vigencia`: **DATE**
-- `fornecedor_empresa`: **STRING**
-- `condicoes_pagamento_gerais`: **STRING**
-- `data_assinatura_contrato`: **DATE**
-- `data_fim_vigencia`: **DATE**
-- `valor_total_item_contrato`: **FLOAT**
-- `id_contrato`: **STRING**
-- `proxima_data_vencimento_pagamento_item`: **DATE**
-- `fornecedor_contato_email`: **STRING**
-- `valor_total_contrato_estimado`: **FLOAT**
-- `fornecedor_contato_nome`: **STRING**
-- `status_contrato`: **STRING**
-- `categoria_produto_contratado`: **STRING**
-- `nome_contrato`: **STRING**
+- `id`: **INTEGER**
+- `course`: **INTEGER**
+- `name`: **STRING**
+- `duedate`: **INTEGER**
+- `grade`: **INTEGER**
 
-### Table: `cotacoes`
+### Table: `mdl_assign_submission`
 - Table Description: No description available.
-- `taxa_imposto`: **FLOAT**
-- `percentual_desconto`: **FLOAT**
-- `status_resposta`: **STRING**
-- `categoria_produto`: **STRING**
-- `valor`: **FLOAT**
-- `nome_produto`: **STRING**
-- `nome_fornecedor`: **STRING**
-- `data_entrega`: **DATE**
-- `id_solicitacao_cotacao`: **STRING**
+- `id`: **INTEGER**
+- `assignment`: **INTEGER**
+- `userid`: **INTEGER**
+- `status`: **STRING**
+- `timemodified`: **INTEGER**
 
-### Table: `pedidos`
+### Table: `mdl_context`
 - Table Description: No description available.
-- `valor_imposto_aplicado_item`: **FLOAT**
-- `valor_desconto_aplicado_item`: **FLOAT**
-- `percentual_imposto_item`: **FLOAT**
-- `percentual_desconto_item`: **FLOAT**
-- `subtotal_item_bruto`: **FLOAT**
-- `valor_unitario`: **FLOAT**
-- `unidade_medida`: **STRING**
-- `quantidade`: **INTEGER**
-- `data_prevista_entrega_item`: **DATE**
-- `categoria_produto`: **STRING**
-- `data_emissao_pedido`: **DATE**
-- `termos_pagamento`: **STRING**
-- `status_pedido`: **STRING**
-- `fornecedor_contato_email`: **STRING**
-- `fornecedor_contato_nome`: **STRING**
-- `sequencial_item_pedido`: **INTEGER**
-- `centro_custo`: **STRING**
-- `nome_fornecedor`: **STRING**
-- `nome_produto`: **STRING**
-- `valor_total_liquido_item`: **FLOAT**
-- `id_pedido_compra`: **STRING**
+- `id`: **INTEGER**
+- `contextlevel`: **INTEGER**
+- `instanceid`: **INTEGER**
 
-### Table: `requisicoes`
+### Table: `mdl_course`
 - Table Description: No description available.
-- `observacoes_item`: **STRING**
-- `valor_estimado_total_item`: **FLOAT**
-- `valor_estimado_unitario_item`: **FLOAT**
-- `data_necessidade_item`: **DATE**
-- `quantidade_solicitada`: **INTEGER**
-- `categoria_produto`: **STRING**
-- `sequencial_item_requisicao`: **INTEGER**
-- `id_requisicao_compra`: **STRING**
-- `centro_custo_sugerido`: **STRING**
-- `unidade_medida`: **STRING**
-- `nome_requisitante`: **STRING**
-- `status_requisicao`: **STRING**
-- `nome_produto`: **STRING**
-- `data_requisicao`: **DATE**
-- `departamento_requisitante`: **STRING**
-- `justificativa_geral_requisicao`: **STRING**
+- `id`: **INTEGER**
+- `category`: **INTEGER**
+- `fullname`: **STRING**
+- `shortname`: **STRING**
+- `summary`: **STRING**
+- `format`: **STRING**
+- `visible`: **INTEGER**
+- `timecreated`: **INTEGER**
+- `timemodified`: **INTEGER**
+- `startdate`: **INTEGER**
+- `enddate`: **INTEGER**
+
+### Table: `mdl_course_categories`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `name`: **STRING**
+- `coursecount`: **INTEGER**
+- `visible`: **INTEGER**
+
+### Table: `mdl_course_completions`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `userid`: **INTEGER**
+- `course`: **INTEGER**
+- `timecompleted`: **INTEGER**
+
+### Table: `mdl_course_modules`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `course`: **INTEGER**
+- `module`: **INTEGER**
+- `instance`: **INTEGER**
+- `section`: **INTEGER**
+- `visible`: **INTEGER**
+
+### Table: `mdl_course_modules_completion`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `coursemoduleid`: **INTEGER**
+- `userid`: **INTEGER**
+- `completionstate`: **INTEGER**
+- `timemodified`: **INTEGER**
+
+### Table: `mdl_course_sections`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `course`: **INTEGER**
+- `section`: **INTEGER**
+- `name`: **STRING**
+
+### Table: `mdl_enrol`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `enrol`: **STRING**
+- `status`: **INTEGER**
+- `courseid`: **INTEGER**
+
+### Table: `mdl_grade_grades`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `itemid`: **INTEGER**
+- `userid`: **INTEGER**
+- `finalgrade`: **INTEGER**
+- `rawgrade`: **INTEGER**
+- `timemodified`: **INTEGER**
+
+### Table: `mdl_grade_items`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `courseid`: **INTEGER**
+- `itemname`: **STRING**
+- `itemtype`: **STRING**
+- `itemmodule`: **STRING**
+- `iteminstance`: **INTEGER**
+- `gradetype`: **INTEGER**
+- `grademax`: **INTEGER**
+
+### Table: `mdl_role_assignments`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `roleid`: **INTEGER**
+- `contextid`: **INTEGER**
+- `userid`: **INTEGER**
+
+### Table: `mdl_user`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `username`: **STRING**
+- `password`: **STRING**
+- `firstname`: **STRING**
+- `lastname`: **STRING**
+- `email`: **STRING**
+- `auth`: **STRING**
+- `confirmed`: **INTEGER**
+- `deleted`: **INTEGER**
+- `timecreated`: **INTEGER**
+- `timemodified`: **INTEGER**
+- `city`: **STRING**
+- `country`: **STRING**
+- `custom_gender`: **STRING**
+- `custom_age`: **INTEGER**
+- `custom_education_level`: **STRING**
+
+### Table: `mdl_user_enrolments`
+- Table Description: No description available.
+- `id`: **INTEGER**
+- `status`: **INTEGER**
+- `enrolid`: **INTEGER**
+- `userid`: **INTEGER**
+- `timestart`: **INTEGER**
+- `timeend`: **INTEGER**
 
 ---
 ## Table Data Samples:
 
-### Samples for table `contratos`:
-| frequencia_entrega_faturamento_item | quantidade_contratada_item | nome_produto_contratado | unidade_medida_item | sequencial_item_contrato | observacoes_gerais_contrato | tipo_contrato | preco_fixo_unitario_item | data_inicio_vigencia | fornecedor_empresa | condicoes_pagamento_gerais | data_assinatura_contrato | data_fim_vigencia | valor_total_item_contrato | id_contrato | proxima_data_vencimento_pagamento_item | fornecedor_contato_email | valor_total_contrato_estimado | fornecedor_contato_nome | status_contrato | categoria_produto_contratado | nome_contrato |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Faturamento Único ao Final | 187 | Digital Caliper 6-inch | un | 1 | Reuniões de alinhamento trimestrais obrigatórias. | Parceria Estratégica | 3740.27 | 2025-02-12 | NovaSource Enterprises | Boleto bancário com vencimento no dia 10 de cada mês subsequente | 2025-02-01 | 2027-02-18 | 699430.49 | CONTR_2025_0001 | 2025-05-13 | ricardo.araujo@novasource.example.com | 8041953.61 | Ricardo Araujo | Expirado | Equipamentos de Medição | Contrato Mestre de Fornecimento de Bens #01 |
-| Entrega Única ao Início | 104 | Thermal Imaging Camera | un | 2 | Reuniões de alinhamento trimestrais obrigatórias. | Parceria Estratégica | 989.54 | 2025-02-12 | NovaSource Enterprises | Boleto bancário com vencimento no dia 10 de cada mês subsequente | 2025-02-01 | 2027-02-18 | 102912.16 | CONTR_2025_0001 | 2025-04-13 | ricardo.araujo@novasource.example.com | 8041953.61 | Ricardo Araujo | Expirado | Equipamentos de Medição | Contrato Mestre de Fornecimento de Bens #01 |
-| Trimestral | 702 | Electric Forklift Battery | cm | 3 | Reuniões de alinhamento trimestrais obrigatórias. | Parceria Estratégica | 2969.06 | 2025-02-12 | NovaSource Enterprises | Boleto bancário com vencimento no dia 10 de cada mês subsequente | 2025-02-01 | 2027-02-18 | 2084280.12 | CONTR_2025_0001 | 2025-04-13 | ricardo.araujo@novasource.example.com | 8041953.61 | Ricardo Araujo | Expirado | Peças para Veículos Industriais | Contrato Mestre de Fornecimento de Bens #01 |
+### Samples for table `mdl_assign`:
+| id | course | name | duedate | grade |
+|---|---|---|---|---|
+| 1 | 1 | Tarefa 1 - Q_GASTRO | 1732440805 | 100 |
+| 2 | 1 | Tarefa 2 - Q_GASTRO | 1746396861 | 100 |
+| 3 | 2 | Tarefa 1 - PIGEON_MSG | 1754954083 | 100 |
 
-### Samples for table `cotacoes`:
-| taxa_imposto | percentual_desconto | status_resposta | categoria_produto | valor | nome_produto | nome_fornecedor | data_entrega | id_solicitacao_cotacao |
-|---|---|---|---|---|---|---|---|---|
-| 0.0806 | 0.0 | respondido | Ferramentas para Eletrônica | 747.87 | Anti-Static Wrist Strap | Atlas Trading Co. | 2026-10-05 | RFQ_2025_080 |
-| 0.1925 | 0.0 | respondido | Ferramentas para Eletrônica | 836.25 | Anti-Static Wrist Strap | Cascade Procurement | 2029-12-20 | RFQ_2025_250 |
-| 0.1574 | 0.0 | respondido | Ferramentas para Eletrônica | 372.84 | Anti-Static Wrist Strap | Alpha Prime Resources | 2026-12-09 | RFQ_2025_099 |
+### Samples for table `mdl_assign_submission`:
+| id | assignment | userid | status | timemodified |
+|---|---|---|---|---|
+| 1 | 1 | 6908 | submitted | 1732984542 |
+| 4 | 1 | 7088 | submitted | 1731812948 |
+| 6 | 1 | 7478 | submitted | 1732895837 |
 
-### Samples for table `pedidos`:
-| valor_imposto_aplicado_item | valor_desconto_aplicado_item | percentual_imposto_item | percentual_desconto_item | subtotal_item_bruto | valor_unitario | unidade_medida | quantidade | data_prevista_entrega_item | categoria_produto | data_emissao_pedido | termos_pagamento | status_pedido | fornecedor_contato_email | fornecedor_contato_nome | sequencial_item_pedido | centro_custo | nome_fornecedor | nome_produto | valor_total_liquido_item | id_pedido_compra |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 5468.67 | 0.0 | 0.1591 | 0.0 | 34372.52 | 452.27 | kit | 76 | 2025-03-12 | Infraestrutura de TI | 2025-01-17 | Boleto 30 dias | pago | beatriz.araujo@ironclad.example.com | Beatriz Araujo | 1 | MKT_CampanhaXYZ_2025 | IronClad Goods | Data Cable Cat 6 (1000ft) | 39841.19 | PC_2025_0001 |
-| 1032.41 | 0.0 | 0.0741 | 0.0 | 13932.6 | 232.21 | kg | 60 | 2025-04-04 | Peças para Veículos Industriais | 2025-01-17 | Boleto 30 dias | pago | beatriz.araujo@ironclad.example.com | Beatriz Araujo | 2 | MKT_CampanhaXYZ_2025 | IronClad Goods | Electric Forklift Battery | 14965.01 | PC_2025_0001 |
-| 7774.4 | 0.0 | 0.1049 | 0.0 | 74112.5 | 1347.5 | L | 55 | 2025-01-17 | Saúde e Segurança | 2025-01-17 | Boleto 30 dias | pago | beatriz.araujo@ironclad.example.com | Beatriz Araujo | 3 | MKT_CampanhaXYZ_2025 | IronClad Goods | First Aid Kit (50 Person) | 81886.9 | PC_2025_0001 |
+### Samples for table `mdl_context`:
+| id | contextlevel | instanceid |
+|---|---|---|
+| 11 | 50 | 1 |
+| 12 | 50 | 2 |
+| 13 | 50 | 3 |
 
-### Samples for table `requisicoes`:
-| observacoes_item | valor_estimado_total_item | valor_estimado_unitario_item | data_necessidade_item | quantidade_solicitada | categoria_produto | sequencial_item_requisicao | id_requisicao_compra | centro_custo_sugerido | unidade_medida | nome_requisitante | status_requisicao | nome_produto | data_requisicao | departamento_requisitante | justificativa_geral_requisicao |
+### Samples for table `mdl_course`:
+| id | category | fullname | shortname | summary | format | visible | timecreated | timemodified | startdate | enddate |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 2 | Quantum Gastronomy Fundamentals | Q_GASTRO | Explore a interseção da física quântica e das artes culinárias. Aprenda a preparar o Suflê de Schrödinger. | topics | 1 | 1725148800 | 1725148800 | 1725148800 | 1767139200 |
+| 2 | 5 | Advanced Pigeon-Based Messaging | PIGEON_MSG | Domine a antiga e confiável arte da transmissão de dados por pombos-correio. Inclui técnicas avançadas de correção de erros. | topics | 1 | 1725148800 | 1725148800 | 1725148800 | 1767139200 |
+| 3 | 5 | Introduction to Martian Horticulture | MARS_GARDEN | Aprenda a cultivar batatas e outras culturas em ambientes marcianos simulados. Terraforming básico incluído. | topics | 1 | 1726358400 | 1726358400 | 1726358400 | 1767139200 |
+
+### Samples for table `mdl_course_categories`:
+| id | name | coursecount | visible |
+|---|---|---|---|
+| 1 | Categoria Fictícia 1 | 0 | 1 |
+| 2 | Categoria Fictícia 2 | 0 | 1 |
+| 3 | Categoria Fictícia 3 | 0 | 1 |
+
+### Samples for table `mdl_course_completions`:
+| id | userid | course | timecompleted |
+|---|---|---|---|
+| 1 | 6908 | 1 | 1769475857 |
+| 2 | 7088 | 1 | 1769535529 |
+| 3 | 7478 | 1 | 1769246552 |
+
+### Samples for table `mdl_course_modules`:
+| id | course | module | instance | section | visible |
+|---|---|---|---|---|---|
+| 1 | 1 | 1 | 1 | 4 | 1 |
+| 2 | 1 | 1 | 2 | 2 | 1 |
+| 3 | 2 | 1 | 3 | 10 | 1 |
+
+### Samples for table `mdl_course_modules_completion`:
+| id | coursemoduleid | userid | completionstate | timemodified |
+|---|---|---|---|---|
+| 1 | 1 | 6908 | 1 | 1732984542 |
+| 4 | 1 | 7088 | 1 | 1731812948 |
+| 6 | 1 | 7478 | 1 | 1732895837 |
+
+### Samples for table `mdl_course_sections`:
+| id | course | section | name |
+|---|---|---|---|
+| 1 | 1 | 0 | Tópico 0 |
+| 5 | 2 | 0 | Tópico 0 |
+| 11 | 3 | 0 | Tópico 0 |
+
+### Samples for table `mdl_enrol`:
+| id | enrol | status | courseid |
+|---|---|---|---|
+| 1 | manual | 0 | 1 |
+| 2 | manual | 0 | 2 |
+| 3 | manual | 0 | 3 |
+
+### Samples for table `mdl_grade_grades`:
+| id | itemid | userid | finalgrade | rawgrade | timemodified |
+|---|---|---|---|---|---|
+| 6 | 1 | 7478 | 50 | 50 | 1751029166 |
+| 28 | 1 | 8246 | 50 | 50 | 1751029166 |
+| 291 | 1 | 7823 | 50 | 50 | 1751029166 |
+
+### Samples for table `mdl_grade_items`:
+| id | courseid | itemname | itemtype | itemmodule | iteminstance | gradetype | grademax |
+|---|---|---|---|---|---|---|---|
+| 1 | 1 | Tarefa 1 - Q_GASTRO | mod | assign | 1 | 1 | 100 |
+| 2 | 1 | Tarefa 2 - Q_GASTRO | mod | assign | 2 | 1 | 100 |
+| 3 | 2 | Tarefa 1 - PIGEON_MSG | mod | assign | 3 | 1 | 100 |
+
+### Samples for table `mdl_role_assignments`:
+| id | roleid | contextid | userid |
+|---|---|---|---|
+| 1 | 5 | 11 | 6908 |
+| 2 | 5 | 11 | 4642 |
+| 3 | 5 | 11 | 7088 |
+
+### Samples for table `mdl_user`:
+| id | username | password | firstname | lastname | email | auth | confirmed | deleted | timecreated | timemodified | city | country | custom_gender | custom_age | custom_education_level |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Item frágil, requer embalagem especial. | 167955.46 | 1069.78 | 2025-02-16 | 157 | Segurança (EPI) | 1 | RC_2025_00001 | RH_Treinamento_2025 | kg | Julia Martins Faria | cancelada_pelo_requisitante | Safety Work Boots Steel Toe | 2025-01-11 | Financeiro | Reposição de estoque padrão para o departamento. |
-| Solicitar amostra se possível. | 55330.56 | 864.54 | 2025-01-26 | 64 | Prevenção de Incêndio | 2 | RC_2025_00001 | RH_Treinamento_2025 | hora | Julia Martins Faria | cancelada_pelo_requisitante | Fire Extinguisher ABC Type | 2025-01-11 | Financeiro | Reposição de estoque padrão para o departamento. |
-| Necessário treinamento para utilização. | 6821.96 | 58.81 | 2025-02-27 | 116 | Ferramentas Industriais | 3 | RC_2025_00001 | RH_Treinamento_2025 | g | Julia Martins Faria | cancelada_pelo_requisitante | CNC Milling Machine Bit Set | 2025-01-11 | Financeiro | Reposição de estoque padrão para o departamento. |
+| 368 | kaylamurphy | f3ed11bbdb94fd9ebdefbaf646ab94d3 | Lindsey | Bailey | nhanson@example.org | manual | 1 | 0 | 1751029156 | 1751029156 | Maldonadochester | EG | Non-binary | 18 | Bachelor's Degree |
+| 435 | candacemunoz | f3ed11bbdb94fd9ebdefbaf646ab94d3 | Derrick | Munoz | rachelgutierrez@example.com | manual | 1 | 0 | 1751029156 | 1751029156 | Philipburgh | MD | Female | 18 | Bachelor's Degree |
+| 444 | zgutierrez | f3ed11bbdb94fd9ebdefbaf646ab94d3 | Charles | Silva | kvargas@example.com | manual | 1 | 0 | 1751029156 | 1751029156 | North Ericborough | SO | Female | 18 | Bachelor's Degree |
+
+### Samples for table `mdl_user_enrolments`:
+| id | status | enrolid | userid | timestart | timeend |
+|---|---|---|---|---|---|
+| 1 | 0 | 1 | 6908 | 1725148800 | 0 |
+| 2 | 0 | 1 | 4642 | 1725148800 | 0 |
+| 3 | 0 | 1 | 7088 | 1725148800 | 0 |
 
 ---
 ## Column Data Analysis:
 
-### Analysis of Table `contratos`:
-- **frequencia_entrega_faturamento_item**: Text. Distinct Values=`10`. Top values: `Entrega Única ao Início` (214), `Entregas Parciais Mensais, Faturamento Consolidado Trimestral` (208), `Bimestral` (201), `Semestral` (199), `Trimestral` (199)
-- **quantidade_contratada_item**: Numeric. MIN=`2`, MAX=`1000`, AVG=`506.61`, Distinct Values=`870`
-- **nome_produto_contratado**: Text. Distinct Values=`42`. Top values: `Manutenção Preventiva de Equipamentos Industriais` (57), `LED High Bay Light Fixture` (56), `High-Performance Laptop 15-inch` (53), `Wireless Keyboard and Mouse Combo` (52), `Electric Forklift Battery` (52)
-- **unidade_medida_item**: Text. Distinct Values=`16`. Top values: `dz` (132), `L` (129), `g` (128), `cx` (127), `kg` (127)
-- **sequencial_item_contrato**: Numeric. MIN=`1`, MAX=`23`, AVG=`8.50`, Distinct Values=`23`
-- **observacoes_gerais_contrato**: Text. Distinct Values=`7`. Top values: `Índice de reajuste anual: IPCA acumulado.` (315), `Obrigatória a apresentação de apólice de seguro de responsabilidade civil.` (309), `` (294), `Multa por rescisão antecipada de 20% sobre o saldo remanescente.` (287), `Este contrato substitui todos os acordos anteriores entre as partes.` (254)
-- **tipo_contrato**: Text. Distinct Values=`10`. Top values: `Fornecimento de Bens` (312), `Parceria Estratégica` (222), `Locação de Bens Móveis` (219), `Acordo de Nível de Serviço (SLA)` (207), `Locação de Bens Imóveis` (202)
-- **preco_fixo_unitario_item**: Numeric. MIN=`53.98`, MAX=`4998.23`, AVG=`2520.88`, Distinct Values=`1915`
-- **data_inicio_vigencia**: Date/Time. MIN=`2025-01-17`, MAX=`2026-01-14`, Distinct Values=`124`
-- **fornecedor_empresa**: Text. Distinct Values=`35`. Top values: `DeltaWave Technologies` (185), `Orion Industrial` (107), `NextGen Components` (92), `Quantum Systems Integrators` (89), `Terra Firma Goods` (86)
-- **condicoes_pagamento_gerais**: Text. Distinct Values=`7`. Top values: `Trimestral, contra apresentação de relatório de performance` (381), `Mensal, 30 dias após faturamento` (339), `Parcelamento em 12x via sistema interno` (316), `50% na assinatura, 50% na conclusão do projeto marco` (258), `Pagamento único 60 dias após entrega final` (234)
-- **data_assinatura_contrato**: Date/Time. MIN=`2025-01-06`, MAX=`2025-12-20`, Distinct Values=`123`
-- **data_fim_vigencia**: Date/Time. MIN=`2025-06-02`, MAX=`2029-01-27`, Distinct Values=`140`
-- **valor_total_item_contrato**: Numeric. MIN=`2091.12`, MAX=`4879701.3`, AVG=`1279850.00`, Distinct Values=`1920`
-- **id_contrato**: Text. Distinct Values=`150`. Top values: `CONTR_2025_0111` (23), `CONTR_2025_0023` (23), `CONTR_2025_0073` (23), `CONTR_2025_0117` (23), `CONTR_2025_0102` (23)
-- **proxima_data_vencimento_pagamento_item**: Date/Time. MIN=`2025-02-16`, MAX=`2026-04-14`, Distinct Values=`261`
-- **fornecedor_contato_email**: Text. Distinct Values=`35`. Top values: `sofia.martins@deltawave.example.com` (185), `vanessa.silva@orion.example.com` (107), `vanessa.nascimento@nextgen.example.com` (92), `hugo.oliveira@quantum.example.com` (89), `isabela.nascimento@terra.example.com` (86)
-- **valor_total_contrato_estimado**: Numeric. MIN=`2091.12`, MAX=`38882152.92`, AVG=`20640000.07`, Distinct Values=`150`
-- **fornecedor_contato_nome**: Text. Distinct Values=`34`. Top values: `Sofia Martins` (185), `Daniel Rodrigues` (107), `Vanessa Silva` (107), `Vanessa Nascimento` (92), `Hugo Oliveira` (89)
-- **status_contrato**: Text. Distinct Values=`10`. Top values: `Aguardando Assinatura` (900), `Em Aprovação Interna` (261), `Em Negociação com Fornecedor` (174), `Rascunho` (152), `Em Renovação` (98)
-- **categoria_produto_contratado**: Text. Distinct Values=`26`. Top values: `Equipamentos de TI` (281), `Segurança (EPI)` (229), `Mobiliário de Escritório` (134), `Infraestrutura de TI` (123), `Ferramentas Industriais` (97)
-- **nome_contrato**: Text. Distinct Values=`150`. Top values: `Acordo de Nível de Serviço (SLA) - Suporte Técnico Avançado #111` (23), `Acordo de Parceria Comercial para Distribuição Regional #23` (23), `Acordo de Parceria Comercial para Distribuição Regional #73` (23), `Acordo de Parceria Comercial para Distribuição Regional #117` (23), `Contrato de Desenvolvimento e Implementação de Sistema ERP #102` (23)
+### Analysis of Table `mdl_assign`:
+- **id**: Numeric. MIN=`1`, MAX=`43`, AVG=`22.00`, Distinct Values=`43`
+- **course**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.35`, Distinct Values=`15`
+- **name**: Text. Distinct Values=`43`. Top values: `Tarefa 2 - PIGEON_MSG` (1), `Tarefa 1 - Q_GASTRO` (1), `Tarefa 2 - Q_GASTRO` (1), `Tarefa 3 - PIGEON_MSG` (1), `Tarefa 1 - PIGEON_MSG` (1)
+- **duedate**: Numeric. MIN=`1730250056`, MAX=`1766598262`, AVG=`1751206430.44`, Distinct Values=`43`
+- **grade**: Numeric. MIN=`100`, MAX=`100`, AVG=`100.00`, Distinct Values=`1`
 
-### Analysis of Table `cotacoes`:
-- **taxa_imposto**: Numeric. MIN=`0.05`, MAX=`0.2`, AVG=`0.12`, Distinct Values=`1489`
-- **percentual_desconto**: Numeric. MIN=`0.0`, MAX=`0.1499`, AVG=`0.02`, Distinct Values=`1139`
-- **status_resposta**: Text. Distinct Values=`2`. Top values: `respondido` (7392), `pendente` (1344)
-- **categoria_produto**: Text. Distinct Values=`20`. Top values: `Equipamentos de TI` (1508), `Segurança (EPI)` (1401), `Infraestrutura de TI` (725), `Mobiliário de Escritório` (625), `Equipamentos de Medição` (465)
-- **valor**: Numeric. MIN=`10.03`, MAX=`999.9`, AVG=`508.22`, Distinct Values=`7151`
-- **nome_produto**: Text. Distinct Values=`35`. Top values: `Safety Work Boots Steel Toe` (308), `Portable SSD 1TB` (308), `Electric Forklift Battery` (295), `Anti-Static Wrist Strap` (293), `Welding Helmet Auto-Darkening` (293)
-- **nome_fornecedor**: Text. Distinct Values=`35`. Top values: `Global Office Goods Co.` (329), `Keystone Equipment Corp.` (329), `Proactive Logistics Inc.` (329), `Terra Firma Goods` (315), `DeltaWave Technologies` (308)
-- **data_entrega**: Date/Time. MIN=`2025-01-16`, MAX=`2030-01-08`, Distinct Values=`1770`
-- **id_solicitacao_cotacao**: Text. Distinct Values=`250`. Top values: `RFQ_2025_057` (35), `RFQ_2025_080` (35), `RFQ_2025_250` (35), `RFQ_2025_097` (35), `RFQ_2025_099` (35)
+### Analysis of Table `mdl_assign_submission`:
+- **id**: Numeric. MIN=`1`, MAX=`21344`, AVG=`10672.50`, Distinct Values=`21344`
+- **assignment**: Numeric. MIN=`1`, MAX=`43`, AVG=`24.02`, Distinct Values=`43`
+- **userid**: Numeric. MIN=`2`, MAX=`15000`, AVG=`7457.43`, Distinct Values=`6153`
+- **status**: Text. Distinct Values=`1`. Top values: `submitted` (21344)
+- **timemodified**: Numeric. MIN=`1729049025`, MAX=`1767203011`, AVG=`1751157695.80`, Distinct Values=`21330`
 
-### Analysis of Table `pedidos`:
-- **valor_imposto_aplicado_item**: Numeric. MIN=`35.29`, MAX=`30426.19`, AVG=`5761.00`, Distinct Values=`789`
-- **valor_desconto_aplicado_item**: Numeric. MIN=`0.0`, MAX=`13632.11`, AVG=`673.09`, Distinct Values=`186`
-- **percentual_imposto_item**: Numeric. MIN=`0.0402`, MAX=`0.2499`, AVG=`0.14`, Distinct Values=`669`
-- **percentual_desconto_item**: Numeric. MIN=`0.0`, MAX=`0.1198`, AVG=`0.02`, Distinct Values=`171`
-- **subtotal_item_bruto**: Numeric. MIN=`325.13`, MAX=`146344.77`, AVG=`40045.71`, Distinct Values=`789`
-- **valor_unitario**: Numeric. MIN=`11.09`, MAX=`1499.51`, AVG=`776.94`, Distinct Values=`786`
-- **unidade_medida**: Text. Distinct Values=`16`. Top values: `hora` (65), `kit` (55), `m²` (55), `m` (55), `kg` (53)
-- **quantidade**: Numeric. MIN=`1`, MAX=`100`, AVG=`51.36`, Distinct Values=`100`
-- **data_prevista_entrega_item**: Date/Time. MIN=`2025-01-25`, MAX=`2028-01-04`, Distinct Values=`472`
-- **categoria_produto**: Text. Distinct Values=`20`. Top values: `Equipamentos de TI` (131), `Segurança (EPI)` (111), `Mobiliário de Escritório` (70), `Infraestrutura de TI` (66), `Ferramentas Industriais` (55)
-- **data_emissao_pedido**: Date/Time. MIN=`2025-01-17`, MAX=`2027-10-08`, Distinct Values=`179`
-- **termos_pagamento**: Text. Distinct Values=`14`. Top values: `Boleto 15 dias` (78), `Antecipado` (77), `Boleto 7 dias` (70), `21 dias líquidos` (69), `Transferência Bancária Imediata` (65)
-- **status_pedido**: Text. Distinct Values=`15`. Top values: `aprovado` (100), `parcialmente_entregue` (65), `pago` (63), `em_transporte` (60), `pendente_aprovacao` (56)
-- **fornecedor_contato_email**: Text. Distinct Values=`35`. Top values: `tiago.nascimento@silverline.example.com` (55), `beatriz.costa@keystone.example.com` (46), `isabela.santos@quantum.example.com` (45), `daniel.silva@terra.example.com` (36), `william.oliveira@phoenix.example.com` (35)
-- **fornecedor_contato_nome**: Text. Distinct Values=`32`. Top values: `Tiago Nascimento` (72), `Beatriz Costa` (46), `Isabela Santos` (45), `Beatriz Araujo` (39), `Daniel Silva` (36)
-- **sequencial_item_pedido**: Numeric. MIN=`1`, MAX=`7`, AVG=`2.97`, Distinct Values=`7`
-- **centro_custo**: Text. Distinct Values=`15`. Top values: `ENG_ProjetoAlfa_2025` (78), `PROD_LinhaA_Insumos_2025` (77), `VENDAS_EquipeSul_2025` (63), `MKT_Eventos_2025` (58), `TI_SoftwareLic_2025` (56)
-- **nome_fornecedor**: Text. Distinct Values=`35`. Top values: `Silverline Components` (55), `Keystone Equipment Corp.` (46), `Quantum Systems Integrators` (45), `Terra Firma Goods` (36), `Phoenix Materials Group` (35)
-- **nome_produto**: Text. Distinct Values=`35`. Top values: `CNC Milling Machine Bit Set` (36), `Office Desks - L Shape` (28), `Network Router ProSeries` (28), `Pallet Jack 27x48` (27), `Laser Printer Monochrome` (27)
-- **valor_total_liquido_item**: Numeric. MIN=`361.41`, MAX=`169598.95`, AVG=`45133.61`, Distinct Values=`789`
-- **id_pedido_compra**: Text. Distinct Values=`200`. Top values: `PC_2025_0037` (7), `PC_2025_0014` (7), `PC_2025_0017` (7), `PC_2025_0042` (7), `PC_2025_0018` (7)
+### Analysis of Table `mdl_context`:
+- **id**: Numeric. MIN=`11`, MAX=`25`, AVG=`18.00`, Distinct Values=`15`
+- **contextlevel**: Numeric. MIN=`50`, MAX=`50`, AVG=`50.00`, Distinct Values=`1`
+- **instanceid**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.00`, Distinct Values=`15`
 
-### Analysis of Table `requisicoes`:
-- **observacoes_item**: Text. Distinct Values=`8`. Top values: `` (189), `Preferência pela marca 'LiderTech' se disponível.` (54), `Verificar compatibilidade com sistema legado XPTO.` (54), `Entrega urgente, por favor priorizar.` (51), `Necessário treinamento para utilização.` (47)
-- **valor_estimado_total_item**: Numeric. MIN=`235.8`, MAX=`238312.61`, AVG=`66638.60`, Distinct Values=`359`
-- **valor_estimado_unitario_item**: Numeric. MIN=`4.83`, MAX=`1294.55`, AVG=`672.54`, Distinct Values=`359`
-- **data_necessidade_item**: Date/Time. MIN=`2025-01-18`, MAX=`2026-04-09`, Distinct Values=`256`
-- **quantidade_solicitada**: Numeric. MIN=`1`, MAX=`200`, AVG=`98.22`, Distinct Values=`185`
-- **categoria_produto**: Text. Distinct Values=`20`. Top values: `Equipamentos de TI` (93), `Segurança (EPI)` (79), `Mobiliário de Escritório` (48), `Infraestrutura de TI` (44), `Ferramentas Industriais` (34)
-- **sequencial_item_requisicao**: Numeric. MIN=`1`, MAX=`10`, AVG=`3.82`, Distinct Values=`10`
-- **id_requisicao_compra**: Text. Distinct Values=`100`. Top values: `RC_2025_00075` (10), `RC_2025_00007` (10), `RC_2025_00021` (10), `RC_2025_00085` (10), `RC_2025_00048` (10)
-- **centro_custo_sugerido**: Text. Distinct Values=`15`. Top values: `TI_Infra_2025` (59), `ADM_Geral_2025` (55), `FIN_ContasPagar_2025` (48), `MKT_CampanhaXYZ_2025` (46), `LOG_TransporteNacional_2025` (45)
-- **unidade_medida**: Text. Distinct Values=`16`. Top values: `ton` (50), `un` (45), `m³` (39), `mL` (37), `serviço` (37)
-- **nome_requisitante**: Text. Distinct Values=`15`. Top values: `Julia Martins Faria` (61), `Eduardo Pereira Lima` (61), `Ana Carolina Silva` (59), `Sofia Azevedo Correia` (56), `Rafael Sousa Pinto` (54)
-- **status_requisicao**: Text. Distinct Values=`9`. Top values: `rejeitada_pelo_gestor` (79), `aprovada_pelo_gestor` (78), `totalmente_atendida_pc` (76), `em_cotacao` (75), `nova` (60)
-- **nome_produto**: Text. Distinct Values=`35`. Top values: `Soldering Station Digital Display` (22), `Thermal Imaging Camera` (21), `Heavy Duty Shelving Unit` (21), `Industrial Grade Pump Type A` (19), `Hydraulic Fluid ISO VG 32 (20L)` (18)
-- **data_requisicao**: Date/Time. MIN=`2025-01-11`, MAX=`2026-01-31`, Distinct Values=`88`
-- **departamento_requisitante**: Text. Distinct Values=`14`. Top values: `Recursos Humanos` (82), `Logística` (55), `Administrativo Geral` (51), `Manutenção` (50), `Pesquisa e Desenvolvimento` (39)
-- **justificativa_geral_requisicao**: Text. Distinct Values=`10`. Top values: `Material para evento de lançamento de produto.` (72), `Uso departamental contínuo para atividades administrativas.` (67), `Melhoria de infraestrutura predial.` (57), `Item essencial para cumprimento de requisito regulatório.` (56), `Necessidade para o novo projeto 'Inovação Global 2025'.` (52)
+### Analysis of Table `mdl_course`:
+- **id**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.00`, Distinct Values=`15`
+- **category**: Numeric. MIN=`1`, MAX=`5`, AVG=`3.20`, Distinct Values=`5`
+- **fullname**: Text. Distinct Values=`15`. Top values: `Digital Ethics in Virtual Reality` (1), `Quantum Gastronomy Fundamentals` (1), `Advanced Pigeon-Based Messaging` (1), `Time Travel Paradox Management` (1), `Introduction to Martian Horticulture` (1)
+- **shortname**: Text. Distinct Values=`15`. Top values: `VR_ETHICS` (1), `Q_GASTRO` (1), `PIGEON_MSG` (1), `TIME_PARADOX` (1), `MARS_GARDEN` (1)
+- **summary**: Text. Distinct Values=`15`. Top values: `Um mergulho profundo nos dilemas morais e éticos dos mundos virtuais e da consciência digital.` (1), `Explore a interseção da física quântica e das artes culinárias. Aprenda a preparar o Suflê de Schrödinger.` (1), `Domine a antiga e confiável arte da transmissão de dados por pombos-correio. Inclui técnicas avançadas de correção de erros.` (1), `Treinamento essencial para agentes temporais sobre como evitar e resolver paradoxos do avô e loops causais.` (1), `Aprenda a cultivar batatas e outras culturas em ambientes marcianos simulados. Terraforming básico incluído.` (1)
+- **format**: Text. Distinct Values=`1`. Top values: `topics` (15)
+- **visible**: Numeric. MIN=`1`, MAX=`1`, AVG=`1.00`, Distinct Values=`1`
+- **timecreated**: Numeric. MIN=`1725148800`, MAX=`1743465600`, AVG=`1735706880.00`, Distinct Values=`11`
+- **timemodified**: Numeric. MIN=`1725148800`, MAX=`1743465600`, AVG=`1735706880.00`, Distinct Values=`11`
+- **startdate**: Numeric. MIN=`1725148800`, MAX=`1743465600`, AVG=`1735706880.00`, Distinct Values=`11`
+- **enddate**: Numeric. MIN=`1767139200`, MAX=`1767139200`, AVG=`1767139200.00`, Distinct Values=`1`
+
+### Analysis of Table `mdl_course_categories`:
+- **id**: Numeric. MIN=`1`, MAX=`5`, AVG=`3.00`, Distinct Values=`5`
+- **name**: Text. Distinct Values=`5`. Top values: `Categoria Fictícia 4` (1), `Categoria Fictícia 1` (1), `Categoria Fictícia 2` (1), `Categoria Fictícia 5` (1), `Categoria Fictícia 3` (1)
+- **coursecount**: Numeric. MIN=`0`, MAX=`0`, AVG=`0.00`, Distinct Values=`1`
+- **visible**: Numeric. MIN=`1`, MAX=`1`, AVG=`1.00`, Distinct Values=`1`
+
+### Analysis of Table `mdl_course_completions`:
+- **id**: Numeric. MIN=`1`, MAX=`5570`, AVG=`2785.50`, Distinct Values=`5570`
+- **userid**: Numeric. MIN=`4`, MAX=`15000`, AVG=`7481.42`, Distinct Values=`4735`
+- **course**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.37`, Distinct Values=`15`
+- **timecompleted**: Numeric. MIN=`1767226214`, MAX=`1769731006`, AVG=`1768479619.38`, Distinct Values=`5563`
+
+### Analysis of Table `mdl_course_modules`:
+- **id**: Numeric. MIN=`1`, MAX=`43`, AVG=`22.00`, Distinct Values=`43`
+- **course**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.35`, Distinct Values=`15`
+- **module**: Numeric. MIN=`1`, MAX=`1`, AVG=`1.00`, Distinct Values=`1`
+- **instance**: Numeric. MIN=`1`, MAX=`43`, AVG=`22.00`, Distinct Values=`43`
+- **section**: Numeric. MIN=`2`, MAX=`64`, AVG=`36.53`, Distinct Values=`35`
+- **visible**: Numeric. MIN=`1`, MAX=`1`, AVG=`1.00`, Distinct Values=`1`
+
+### Analysis of Table `mdl_course_modules_completion`:
+- **id**: Numeric. MIN=`1`, MAX=`21344`, AVG=`10672.50`, Distinct Values=`21344`
+- **coursemoduleid**: Numeric. MIN=`1`, MAX=`43`, AVG=`24.02`, Distinct Values=`43`
+- **userid**: Numeric. MIN=`2`, MAX=`15000`, AVG=`7457.43`, Distinct Values=`6153`
+- **completionstate**: Numeric. MIN=`1`, MAX=`1`, AVG=`1.00`, Distinct Values=`1`
+- **timemodified**: Numeric. MIN=`1729049025`, MAX=`1767203011`, AVG=`1751157695.80`, Distinct Values=`21330`
+
+### Analysis of Table `mdl_course_sections`:
+- **id**: Numeric. MIN=`1`, MAX=`67`, AVG=`34.00`, Distinct Values=`67`
+- **course**: Numeric. MIN=`1`, MAX=`15`, AVG=`7.75`, Distinct Values=`15`
+- **section**: Numeric. MIN=`0`, MAX=`5`, AVG=`1.85`, Distinct Values=`6`
+- **name**: Text. Distinct Values=`6`. Top values: `Tópico 1` (15), `Tópico 2` (15), `Tópico 0` (15), `Tópico 3` (12), `Tópico 4` (7)
+
+### Analysis of Table `mdl_enrol`:
+- **id**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.00`, Distinct Values=`15`
+- **enrol**: Text. Distinct Values=`1`. Top values: `manual` (15)
+- **status**: Numeric. MIN=`0`, MAX=`0`, AVG=`0.00`, Distinct Values=`1`
+- **courseid**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.00`, Distinct Values=`15`
+
+### Analysis of Table `mdl_grade_grades`:
+- **id**: Numeric. MIN=`1`, MAX=`21344`, AVG=`10672.50`, Distinct Values=`21344`
+- **itemid**: Numeric. MIN=`1`, MAX=`43`, AVG=`24.02`, Distinct Values=`43`
+- **userid**: Numeric. MIN=`2`, MAX=`15000`, AVG=`7457.43`, Distinct Values=`6153`
+- **finalgrade**: Numeric. MIN=`50`, MAX=`100`, AVG=`75.05`, Distinct Values=`51`
+- **rawgrade**: Numeric. MIN=`50`, MAX=`100`, AVG=`75.05`, Distinct Values=`51`
+- **timemodified**: Numeric. MIN=`1751029166`, MAX=`1751029166`, AVG=`1751029166.00`, Distinct Values=`1`
+
+### Analysis of Table `mdl_grade_items`:
+- **id**: Numeric. MIN=`1`, MAX=`43`, AVG=`22.00`, Distinct Values=`43`
+- **courseid**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.35`, Distinct Values=`15`
+- **itemname**: Text. Distinct Values=`43`. Top values: `Tarefa 2 - PIGEON_MSG` (1), `Tarefa 1 - Q_GASTRO` (1), `Tarefa 2 - Q_GASTRO` (1), `Tarefa 3 - PIGEON_MSG` (1), `Tarefa 1 - PIGEON_MSG` (1)
+- **itemtype**: Text. Distinct Values=`1`. Top values: `mod` (43)
+- **itemmodule**: Text. Distinct Values=`1`. Top values: `assign` (43)
+- **iteminstance**: Numeric. MIN=`1`, MAX=`43`, AVG=`22.00`, Distinct Values=`43`
+- **gradetype**: Numeric. MIN=`1`, MAX=`1`, AVG=`1.00`, Distinct Values=`1`
+- **grademax**: Numeric. MIN=`100`, MAX=`100`, AVG=`100.00`, Distinct Values=`1`
+
+### Analysis of Table `mdl_role_assignments`:
+- **id**: Numeric. MIN=`1`, MAX=`8392`, AVG=`4196.50`, Distinct Values=`8392`
+- **roleid**: Numeric. MIN=`5`, MAX=`5`, AVG=`5.00`, Distinct Values=`1`
+- **contextid**: Numeric. MIN=`11`, MAX=`25`, AVG=`18.23`, Distinct Values=`15`
+- **userid**: Numeric. MIN=`2`, MAX=`15000`, AVG=`7476.95`, Distinct Values=`6570`
+
+### Analysis of Table `mdl_user`:
+- **id**: Numeric. MIN=`2`, MAX=`15001`, AVG=`7501.50`, Distinct Values=`15000`
+- **username**: Text. Distinct Values=`15000`. Top values: `hamptonmaria` (1), `kaylamurphy` (1), `candacemunoz` (1), `jordanwest` (1), `zgutierrez` (1)
+- **password**: Text. Distinct Values=`1`. Top values: `f3ed11bbdb94fd9ebdefbaf646ab94d3` (15000)
+- **firstname**: Text. Distinct Values=`676`. Top values: `Michael` (360), `David` (260), `James` (242), `John` (226), `Jennifer` (225)
+- **lastname**: Text. Distinct Values=`998`. Top values: `Smith` (336), `Johnson` (240), `Brown` (193), `Jones` (188), `Williams` (188)
+- **email**: Text. Distinct Values=`15000`. Top values: `robinsonchristina@example.net` (1), `nhanson@example.org` (1), `rachelgutierrez@example.com` (1), `robinmartin@example.org` (1), `kvargas@example.com` (1)
+- **auth**: Text. Distinct Values=`1`. Top values: `manual` (15000)
+- **confirmed**: Numeric. MIN=`1`, MAX=`1`, AVG=`1.00`, Distinct Values=`1`
+- **deleted**: Numeric. MIN=`0`, MAX=`0`, AVG=`0.00`, Distinct Values=`1`
+- **timecreated**: Numeric. MIN=`1751029156`, MAX=`1751029166`, AVG=`1751029160.69`, Distinct Values=`11`
+- **timemodified**: Numeric. MIN=`1751029156`, MAX=`1751029166`, AVG=`1751029160.69`, Distinct Values=`11`
+- **city**: Text. Distinct Values=`10658`. Top values: `East Michael` (16), `South James` (16), `North Michael` (15), `North David` (15), `North John` (14)
+- **country**: Text. Distinct Values=`195`. Top values: `OM` (100), `IN` (97), `TN` (96), `VN` (96), `GY` (95)
+- **custom_gender**: Text. Distinct Values=`3`. Top values: `Female` (5037), `Male` (5016), `Non-binary` (4947)
+- **custom_age**: Numeric. MIN=`18`, MAX=`65`, AVG=`41.61`, Distinct Values=`48`
+- **custom_education_level**: Text. Distinct Values=`4`. Top values: `High School Diploma` (3813), `Bachelor's Degree` (3767), `Postgraduate` (3710), `Some College` (3710)
+
+### Analysis of Table `mdl_user_enrolments`:
+- **id**: Numeric. MIN=`1`, MAX=`8392`, AVG=`4196.50`, Distinct Values=`8392`
+- **status**: Numeric. MIN=`0`, MAX=`0`, AVG=`0.00`, Distinct Values=`1`
+- **enrolid**: Numeric. MIN=`1`, MAX=`15`, AVG=`8.23`, Distinct Values=`15`
+- **userid**: Numeric. MIN=`2`, MAX=`15000`, AVG=`7476.95`, Distinct Values=`6570`
+- **timestart**: Numeric. MIN=`1725148800`, MAX=`1743465600`, AVG=`1736289252.24`, Distinct Values=`11`
+- **timeend**: Numeric. MIN=`0`, MAX=`0`, AVG=`0.00`, Distinct Values=`1`
 
 ---
 ## IMPORTANT BIGQUERY NOTES:
-*   Always use backticks `` ` `` to quote table names and column names to avoid conflicts with SQL reserved keywords (e.g., `` `column_name` ``, `` `table_name` ``).
-*   String literals must be enclosed in single quotes `' '` (e.g., `'mystring'`).
-*   BigQuery Standard SQL heavily relies on `JOIN` clauses to combine data from multiple tables. Pay close attention to common columns (e.g., `nome_produto`, `categoria_produto`, `nome_fornecedor`, `fornecedor_contato_email`) that can serve as linking keys, even if explicit foreign key constraints are not defined.
-*   Use the `LIKE` operator for partial text matches in string columns (e.g., `column_name LIKE '%partial_text%'`).
-*   Leverage BigQuery's rich set of date/time functions for filtering, grouping, and calculating differences. Examples include `CURRENT_DATE()`, `EXTRACT(YEAR FROM date_column)`, `DATE_TRUNC(date_column, UNIT)`, `FORMAT_DATE('%Y-%m-%d', date_column)`, `DATE_DIFF(date_end, date_start, UNIT)`.
-*   For optimal performance and cost efficiency in BigQuery, always use fully qualified table names in the format `your_project_id.your_dataset_id.table_name`.
-*   If tables are partitioned (e.g., by a date column), filter on the partition column in your `WHERE` clause to significantly reduce the amount of data scanned and improve query performance and reduce costs. While partition/cluster keys are not explicitly listed in the schema, be aware of this best practice.
-*   Avoid `SELECT *` in production queries; explicitly list the columns you need.
-*   Subqueries are a common way to handle complex aggregations or filters before joining in a single SQL statement.
+When constructing BigQuery Standard SQL queries, please adhere to the following best practices and considerations:
+
+*   **Fully Qualified Table Names:** Always use fully qualified table names in the format `` `your_project_id.your_dataset_id.table_name` ``. Replace `your_project_id` and `your_dataset_id` with appropriate placeholder values if the context does not provide them. For the examples below, we will use `project.dataset` as placeholders.
+*   **Backticks for Identifiers:** Enclose all table and column names in backticks (` `` `) to avoid conflicts with SQL reserved keywords.
+*   **Single Quotes for Strings:** Use single quotes (`'`) for all string literals.
+*   **Date and Time Handling:**
+    *   Timestamp columns (e.g., `timecreated`, `timemodified`, `duedate`, `timecompleted`, `timestart`, `timeend`) are stored as UNIX timestamps (INTEGER). Convert these to BigQuery's `TIMESTAMP` type using `TIMESTAMP_SECONDS(column_name)` for date/time operations.
+    *   To format timestamps for display, use `FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%S', timestamp_column)`.
+    *   For date aggregation or filtering by date parts, use `DATE_TRUNC(timestamp_column, unit)` (e.g., `DATE_TRUNC(TIMESTAMP_SECONDS(timecreated), DAY)`).
+*   **Joins are Key:** The database schema is normalized. Complex queries will almost always require `JOIN` clauses to combine data from multiple tables (e.g., linking users to courses, courses to assignments, assignments to grades). Identify the correct common columns for joining.
+*   **Partial Text Matches:** Use the `LIKE` operator with wildcard characters (`%`) for partial string matching (e.g., `column_name LIKE '%search_term%'`).
+*   **Query Optimization (General BigQuery Tips):**
+    *   **Filter Early:** Apply `WHERE` clauses as early as possible in the query to reduce the amount of data processed.
+    *   **Select Only Needed Columns:** Avoid `SELECT *`. Explicitly list only the columns you need.
+    *   **Partitioning and Clustering:** If tables were partitioned or clustered (not explicitly shown in this schema, but common in BigQuery), filtering on partition columns (e.g., `WHERE _PARTITIONTIME = 'YYYY-MM-DD'`) or clustering columns can significantly reduce query costs and improve performance by pruning scanned data.
+    *   **Leverage Schema and Descriptions:** Pay attention to table and column descriptions (if available) to better understand the data and relationships, aiding in constructing accurate queries.
 
 ## EXAMPLES:
-**Question:** "List the product names that appear in both 'Aguardando Assinatura' contracts and 'respondido' quotations. For each such product, show the average contract unit price and the average quoted value."
-**SQL Query:** "SELECT t1.`nome_produto_contratado`, AVG(t1.`preco_fixo_unitario_item`) AS `avg_contract_price`, AVG(t2.`valor`) AS `avg_quoted_value` FROM `your_project_id.your_dataset_id.contratos` AS t1 INNER JOIN `your_project_id.your_dataset_id.cotacoes` AS t2 ON t1.`nome_produto_contratado` = t2.`nome_produto` AND t1.`categoria_produto_contratado` = t2.`categoria_produto` WHERE t1.`status_contrato` = 'Aguardando Assinatura' AND t2.`status_resposta` = 'respondido' GROUP BY t1.`nome_produto_contratado` ORDER BY t1.`nome_produto_contratado`;"
-
-**Question:** "Identify suppliers who have at least one 'aprovado' purchase order issued in 2025 and also have submitted 'respondido' quotations in the same year. For these suppliers, calculate their total liquid value from approved orders and the total value from responded quotations."
-**SQL Query:** "SELECT p.`fornecedor_contato_email`, SUM(p.`valor_total_liquido_item`) AS `total_approved_order_value`, SUM(c.`valor`) AS `total_responded_quote_value` FROM `your_project_id.your_dataset_id.pedidos` AS p INNER JOIN `your_project_id.your_dataset_id.cotacoes` AS c ON p.`nome_fornecedor` = c.`nome_fornecedor` AND p.`nome_produto` = c.`nome_produto` AND p.`categoria_produto` = c.`categoria_produto` WHERE p.`status_pedido` = 'aprovado' AND EXTRACT(YEAR FROM p.`data_emissao_pedido`) = 2025 AND c.`status_resposta` = 'respondido' AND EXTRACT(YEAR FROM c.`data_entrega`) = 2025 GROUP BY p.`fornecedor_contato_email` HAVING SUM(p.`valor_total_liquido_item`) IS NOT NULL AND SUM(c.`valor`) IS NOT NULL ORDER BY `total_approved_order_value` DESC;"
-
-**Question:** "For purchase requisitions (`id_requisicao_compra`) with an estimated total item value greater than 50,000, find the count of unique responding suppliers from associated quotations (`id_solicitacao_cotacao`). Group by product category."
-**SQL Query:** "SELECT r.`categoria_produto`, COUNT(DISTINCT c.`nome_fornecedor`) AS `unique_responding_suppliers_count` FROM `your_project_id.your_dataset_id.requisicoes` AS r INNER JOIN `your_project_id.your_dataset_id.cotacoes` AS c ON r.`nome_produto` = c.`nome_produto` AND r.`categoria_produto` = c.`categoria_produto` WHERE r.`valor_estimado_total_item` > 50000 AND c.`status_resposta` = 'respondido' GROUP BY r.`categoria_produto` ORDER BY `unique_responding_suppliers_count` DESC;"
-
-**Question:** "For each product name found in both 'Ativo' contracts AND 'pago' orders, calculate the average `preco_fixo_unitario_item` from contracts and the average `valor_unitario` from orders. Filter for products where the average contract price is more than 10% higher than the average order price."
-**SQL Query:** "SELECT c.`nome_produto_contratado`, AVG(c.`preco_fixo_unitario_item`) AS `avg_contract_unit_price`, AVG(p.`valor_unitario`) AS `avg_order_unit_price` FROM `your_project_id.your_dataset_id.contratos` AS c INNER JOIN `your_project_id.your_dataset_id.pedidos` AS p ON c.`nome_produto_contratado` = p.`nome_produto` AND c.`categoria_produto_contratado` = p.`categoria_produto` WHERE c.`status_contrato` = 'Ativo' AND p.`status_pedido` = 'pago' GROUP BY c.`nome_produto_contratado` HAVING AVG(c.`preco_fixo_unitario_item`) > 1.10 * AVG(p.`valor_unitario`) ORDER BY c.`nome_produto_contratado`;"
-
-**Question:** "For each department that has submitted requisitions, calculate the average time (in days) from the requisition date (`data_requisicao`) to the order issuance date (`data_emissao_pedido`) for products that successfully transitioned from an 'aprovada_pelo_gestor' requisition to a 'pago' order, considering matching product names and categories."
-**SQL Query:** "SELECT r.`departamento_requisitante`, AVG(DATE_DIFF(p.`data_emissao_pedido`, r.`data_requisicao`, DAY)) AS `avg_requisition_to_order_days` FROM `your_project_id.your_dataset_id.requisicoes` AS r INNER JOIN `your_project_id.your_dataset_id.pedidos` AS p ON r.`nome_produto` = p.`nome_produto` AND r.`categoria_produto` = p.`categoria_produto` WHERE r.`status_requisicao` = 'aprovada_pelo_gestor' AND p.`status_pedido` = 'pago' GROUP BY r.`departamento_requisitante` ORDER BY `avg_requisition_to_order_days` DESC;"
-
-**Question:** "For each product category, calculate the total estimated value from 'aprovada_pelo_gestor' requisitions and the total liquid value from 'aprovado' orders. Only include product categories that have records in both requisitions and orders, and order the results by the total estimated requisition value in descending order."
-**SQL Query:** "SELECT req.`categoria_produto`, req.`total_estimated_value`, ord.`total_liquid_value` FROM (SELECT `categoria_produto`, SUM(`valor_estimado_total_item`) AS `total_estimated_value` FROM `your_project_id.your_dataset_id.requisicoes` WHERE `status_requisicao` = 'aprovada_pelo_gestor' GROUP BY `categoria_produto`) AS req INNER JOIN (SELECT `categoria_produto`, SUM(`valor_total_liquido_item`) AS `total_liquid_value` FROM `your_project_id.your_dataset_id.pedidos` WHERE `status_pedido` = 'aprovado' GROUP BY `categoria_produto`) AS ord ON req.`categoria_produto` = ord.`categoria_produto` ORDER BY req.`total_estimated_value` DESC;"
-
-**Question:** "List products (`nome_produto_contratado`) that were part of 'Expirado' contracts but currently have 'pendente' quotations for the same product (`nome_produto`). Include the contract ID and quotation ID for such cases."
-**SQL Query:** "SELECT c.`nome_produto_contratado`, c.`id_contrato`, co.`id_solicitacao_cotacao` FROM `your_project_id.your_dataset_id.contratos` AS c INNER JOIN `your_project_id.your_dataset_id.cotacoes` AS co ON c.`nome_produto_contratado` = co.`nome_produto` AND c.`categoria_produto_contratado` = co.`categoria_produto` WHERE c.`status_contrato` = 'Expirado' AND co.`status_resposta` = 'pendente' ORDER BY c.`nome_produto_contratado`;"
+**Question:** "List the full name of all users currently enrolled in the 'Quantum Gastronomy Fundamentals' course, along with their enrollment start date."
+**SQL Query:** "SELECT T2.firstname, T2.lastname, FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%S', TIMESTAMP_SECONDS(T3.timestart)) AS enrollment_start_date FROM `project.dataset.mdl_course` AS T1 JOIN `project.dataset.mdl_enrol` AS T4 ON T1.id = T4.courseid JOIN `project.dataset.mdl_user_enrolments` AS T3 ON T4.id = T3.enrolid JOIN `project.dataset.mdl_user` AS T2 ON T3.userid = T2.id WHERE T1.fullname = 'Quantum Gastronomy Fundamentals';"
+**Question:** "Calculate the average final grade for 'Tarefa 1 - Q_GASTRO' in the 'Quantum Gastronomy Fundamentals' course."
+**SQL Query:** "SELECT AVG(T1.finalgrade) FROM `project.dataset.mdl_grade_grades` AS T1 JOIN `project.dataset.mdl_grade_items` AS T2 ON T1.itemid = T2.id JOIN `project.dataset.mdl_course` AS T3 ON T2.courseid = T3.id WHERE T2.itemname = 'Tarefa 1 - Q_GASTRO' AND T3.fullname = 'Quantum Gastronomy Fundamentals';"
+**Question:** "Find the names of all courses that have no assignments listed, and were created before January 1, 2024."
+**SQL Query:** "SELECT T1.fullname FROM `project.dataset.mdl_course` AS T1 LEFT JOIN `project.dataset.mdl_assign` AS T2 ON T1.id = T2.course WHERE T2.id IS NULL AND TIMESTAMP_SECONDS(T1.timecreated) < '2024-01-01 00:00:00 UTC';"
+**Question:** "For each course category, count how many courses belong to it and list the category name."
+**SQL Query:** "SELECT T1.name AS category_name, COUNT(T2.id) AS course_count FROM `project.dataset.mdl_course_categories` AS T1 JOIN `project.dataset.mdl_course` AS T2 ON T1.id = T2.category GROUP BY T1.name ORDER BY course_count DESC;"
+**Question:** "Identify the top 3 users (by full name) who have submitted the most assignments, showing their total submission count."
+**SQL Query:** "SELECT T2.firstname, T2.lastname, COUNT(T1.id) AS total_submissions FROM `project.dataset.mdl_assign_submission` AS T1 JOIN `project.dataset.mdl_user` AS T2 ON T1.userid = T2.id GROUP BY T2.firstname, T2.lastname ORDER BY total_submissions DESC LIMIT 3;"
+**Question:** "List all assignments (name and due date) from courses that fall under the 'Categoria Fictícia 2' category, ordered by their due date."
+**SQL Query:** "SELECT T1.name AS assignment_name, FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%S', TIMESTAMP_SECONDS(T1.duedate)) AS due_date FROM `project.dataset.mdl_assign` AS T1 JOIN `project.dataset.mdl_course` AS T2 ON T1.course = T2.id JOIN `project.dataset.mdl_course_categories` AS T3 ON T2.category = T3.id WHERE T3.name = 'Categoria Fictícia 2' ORDER BY T1.duedate ASC;"
+**Question:** "For each user who has completed at least one course, show their full name and the count of unique courses they have completed, only for those users who have completed more than 1 course."
+**SQL Query:** "SELECT T1.firstname, T1.lastname, COUNT(DISTINCT T2.course) AS completed_course_count FROM `project.dataset.mdl_user` AS T1 JOIN `project.dataset.mdl_course_completions` AS T2 ON T1.id = T2.userid GROUP BY T1.firstname, T1.lastname HAVING completed_course_count > 1 ORDER BY completed_course_count DESC;"

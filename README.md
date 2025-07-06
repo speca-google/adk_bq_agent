@@ -48,13 +48,13 @@ cd adk_bigquery_agent
 
 It is a good practice to isolate the project's dependencies in a virtual environment.
 
-# Create the virtual environment
+Create the virtual environment
 
 ```
 python -m venv .venv
 ```
 
-# Activate the virtual environment
+Activate the virtual environment
 ```
 # On Windows:
 .venv\Scripts\activate
