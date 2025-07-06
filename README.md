@@ -96,9 +96,10 @@ BIGQUERY_DATASET_ID="your-bigquery-dataset-id" # The Dataset ID to connect to (e
 
 Run the `generate_bigquery_prompt.py` script from the project's root directory. It will connect to your BigQuery database, collect metadata and samples, and then use Gemini to generate a complete and optimized prompt file.
 
-# Make sure your current directory is the project root
+# Make sure your current directory is the bigquery_agent to generate the file inside
 ```
-python bigquery_agent/generate_bigquery_prompt.py
+cd bigquery_agent
+python generate_bigquery_prompt.py
 ````
 
 After execution, a new file named `bigquery_context.txt` will be created in the `adk_bq_agent/` directory. This file contains the detailed context about your database schema that the agent will use.
