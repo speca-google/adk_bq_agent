@@ -337,7 +337,6 @@ def main():
         print(f"\n❌ An unexpected error occurred: {e}")
         return
     finally:
-        # BigQuery client does not need explicit close like MySQL connection
         print("\n✅ Database analysis complete.")
 
     # Assemble all gathered information into a single string for Gemini

@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 # Import the refactored tool and the enhanced prompt for BigQuery
 from . import tools
-from .prompt import BIGQUERY_PROMPT # Changed from MYSQL_PROMPT
+from .prompt import BIGQUERY_PROMPT 
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -33,11 +33,11 @@ ROOT_AGENT_MODEL = os.environ.get("ROOT_AGENT_MODEL", "gemini-2.5-flash")
 # Its instruction is the comprehensive prompt we've built, which contains all the
 # database context and reasoning logic. The agent's tool is the SQL query executor.
 root_agent = Agent(
-    name="bigquery_agent", # Changed from "mysql_agent"
+    name="bigquery_agent",
     model=ROOT_AGENT_MODEL,
     description="An agent that understands questions about a BigQuery database, generates SQL, executes it, and provides answers.", # Updated description
-    instruction=BIGQUERY_PROMPT, # Changed from MYSQL_PROMPT
+    instruction=BIGQUERY_PROMPT, 
     tools=[
-        tools.query_bigquery, # Changed from tools.query_mysql
+        tools.query_bigquery,
     ],
 )

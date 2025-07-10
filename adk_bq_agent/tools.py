@@ -148,5 +148,4 @@ def query_bigquery(sql_query: str) -> dict:
         }
     finally:
         # The BigQuery client object does not typically require an explicit close
-        # like database connections (e.g., MySQL connector).
         pass
