@@ -13,9 +13,9 @@
 # limitations under the License.
 
 # Agent metadata
-agent_name: 'mysql_agent'
-agent_display_name: 'MySQL Agent'
-agent_description: 'An agent that can answer questions about a MySQL database by generating and executing SQL queries.'
+agent_name: 'adk_bq_agent'
+agent_display_name: 'ADK BQ Agent'
+agent_description: 'An agent that can answer questions about a BigQuery database by generating and executing SQL queries.'
 
 # Deployment settings
 deploy:
@@ -27,5 +27,5 @@ deploy:
     'pydantic', 
     'python-dotenv',
     'pyyaml',
-    'mysql-connector-python' 
+    'google-cloud-bigquery'
     ]
