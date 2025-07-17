@@ -98,7 +98,7 @@ Run the `generate_bigquery_prompt.py` script from the project's root directory. 
 
 Make sure your current directory is the bigquery_agent to generate the file inside
 ```
-cd bigquery_agent
+cd adk_bq_agent
 python generate_bigquery_prompt.py
 ````
 
