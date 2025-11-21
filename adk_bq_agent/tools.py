@@ -21,6 +21,11 @@ from google.api_core.exceptions import GoogleAPIError
 from dotenv import load_dotenv
 import datetime # Import required for handling date/time objects
 
+from google.adk.tools.tool_context import ToolContext
+from google.oauth2.credentials import Credentials
+
+import logging
+
 # Load environment variables from the .env file
 load_dotenv()
 
@@ -84,7 +89,7 @@ def _json_to_markdown_table(data_list: list) -> str:
     return "\n".join([header_row, separator_row] + data_rows)
 
 
-def query_bigquery(sql_query: str) -> dict:
+def query_bigquery(sql_query: str, tool_context: ToolContext) -> dict:
     """
     Executes a raw SQL query against Google BigQuery and formats the entire
     result set into a single Markdown table.
@@ -105,12 +110,33 @@ def query_bigquery(sql_query: str) -> dict:
             missing_vars.append("BIGQUERY_DATASET_ID")
         return {"error": f"BigQuery connection details are not fully configured in the environment. "
                          f"Please set {', '.join(missing_vars)} in your .env file."}
+    
+    # 1. Retrieve the User's Access Token from ADK Context
+    # 'AUTH_ID' is the ID you defined when registering the agent in Gemini Enterprise
+    auth_id = os.environ.get("AUTH_ID")
+    
+    logging.info(f"Auth ID: {auth_id}")
+    
+    #access_token = tool_context.state.get(f"temp:{auth_id}")
+    
+    # Get state dict where the token of OAuth is stored 
+    state_dict = tool_context.state.to_dict()
+    auth_key = f"temp:{auth_id}"
+    access_token=state_dict[auth_key]
+    
+    if not access_token:
+        return {"error": f"User authorization token not found for ID: {auth_id}"}
 
     client = None
     try:
-        # Initialize BigQuery client with the project ID.
-        # The dataset ID will typically be part of the SQL query itself (e.g., `project.dataset.table`).
-        client = bigquery.Client(project=BIGQUERY_PROJECT_ID)
+        #Create Credentials from the token
+        user_creds = Credentials(token=access_token)
+
+        # Initialize BigQuery client with the project ID and the credentials.
+        client = bigquery.Client(
+            project=BIGQUERY_PROJECT_ID,
+            credentials=user_creds
+        )
 
         # Run the query. The .result() method blocks until the query completes.
         query_job = client.query(sql_query)
