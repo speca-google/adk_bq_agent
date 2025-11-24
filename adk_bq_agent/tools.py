@@ -88,6 +88,11 @@ def _json_to_markdown_table(data_list: list) -> str:
 
     return "\n".join([header_row, separator_row] + data_rows)
 
+# Retrieve the User's Access Token from ADK Context
+# 'AUTH_ID' is the ID you defined when registering the agent in Gemini Enterprise
+auth_id = os.environ.get("AUTH_ID")
+print(f"Auth ID: {auth_id}")
+logging.info(f"Auth ID: {auth_id}")
 
 def query_bigquery(sql_query: str, tool_context: ToolContext) -> dict:
     """
@@ -111,24 +116,12 @@ def query_bigquery(sql_query: str, tool_context: ToolContext) -> dict:
         return {"error": f"BigQuery connection details are not fully configured in the environment. "
                          f"Please set {', '.join(missing_vars)} in your .env file."}
     
-    # 1. Retrieve the User's Access Token from ADK Context
-    # 'AUTH_ID' is the ID you defined when registering the agent in Gemini Enterprise
-    auth_id = os.environ.get("AUTH_ID")
-    
-    logging.info(f"Auth ID: {auth_id}")
-    
-    #access_token = tool_context.state.get(f"temp:{auth_id}")
-    
-    # Get state dict where the token of OAuth is stored 
-    state_dict = tool_context.state.to_dict()
-    auth_key = f"temp:{auth_id}"
-    access_token=state_dict[auth_key]
-    
-    if not access_token:
-        return {"error": f"User authorization token not found for ID: {auth_id}"}
-
     client = None
-    try:
+
+    try: 
+        #Get access token from AUTH_ID authorization
+        access_token = tool_context.state.get(auth_id)
+        
         #Create Credentials from the token
         user_creds = Credentials(token=access_token)
 
@@ -138,6 +131,13 @@ def query_bigquery(sql_query: str, tool_context: ToolContext) -> dict:
             credentials=user_creds
         )
 
+    except:        
+        logging.error(f"User authorization token not found for ID: {auth_id}")
+        logging.error(f"Continuing with default agent service account")
+        # Continue with default access
+        client = bigquery.Client(project=BIGQUERY_PROJECT_ID)
+        
+    try:
         # Run the query. The .result() method blocks until the query completes.
         query_job = client.query(sql_query)
         result_iterator = query_job.result()

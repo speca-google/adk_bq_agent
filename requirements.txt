@@ -1,5 +1,5 @@
 google-cloud-aiplatform[agent_engines, adk]
-google-adk
+google-adk==1.16.0
 cloudpickle
 pydantic
 pyyaml

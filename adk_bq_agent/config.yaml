@@ -22,7 +22,7 @@ deploy:
   # List of Python dependencies required for the agent to run.
   dependencies: [
     'google-cloud-aiplatform[agent_engines,adk]', 
-    'google-adk', 
+    'google-adk==1.16.0', 
     'cloudpickle', 
     'pydantic', 
     'python-dotenv',

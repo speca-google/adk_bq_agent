@@ -4,6 +4,8 @@ This project implements an intelligent agent using the Google Agent Development 
 
 The key feature of this agent is its use of a "prompt engineering" script that inspects the BigQuery database schema to create a rich and detailed context, allowing the AI model to generate much more accurate and complex SQL queries.
 
+**IMPORTANT** This feature uses user credentials retrieved by OAuth process in Gemini Enterprise, and for now is working only with `google-adk==1.16.0`
+
 ## Project Structure
 ```
 /adk_bigquery_agent/                  # Root project folder
@@ -90,6 +92,10 @@ LLM_MODEL="gemini-2.5-flash"
 # --- BigQuery Database Settings ---
 BIGQUERY_PROJECT_ID="your-gcp-project-id"     # Your BigQuery Project ID
 BIGQUERY_DATASET_ID="your-bigquery-dataset-id" # The Dataset ID to connect to (e.g., "my_analytics_data")
+
+# --- OAuth AuthID ---
+AUTH_ID="your-oauth-id"
+
 ```
 
 ### 5. Generate the Database Context
@@ -118,3 +124,9 @@ gcloud auth application-default login
 ### 7. Deploy this agent on Agent Engine
 
 To deploy this agent, use the Python Notebook `deploy_agent_engine.ipynb`. This file contains a step-by-step guide for deployment.
+
+### 8. Configure OAuth for User Credentials Query
+
+ - Create an OAuth following [these steps](https://clouddocs.devsite.corp.google.com/gemini/enterprise/docs/register-and-manage-an-adk-agent)
+ - Configure the Agent using this OAuth 
+ 
