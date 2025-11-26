@@ -14,48 +14,54 @@
 
 # tools.py
 import os
-# Import BigQuery client from google-cloud-bigquery library
-from google.cloud import bigquery
-# Import Google API error for specific exception handling
-from google.api_core.exceptions import GoogleAPIError
+import logging
+import datetime
 from dotenv import load_dotenv
-import datetime # Import required for handling date/time objects
 
+# --- BigQuery Imports ---
+from google.cloud import bigquery
+from google.api_core.exceptions import GoogleAPIError
+
+# --- Vertex AI Search (Discovery Engine) Imports ---
+from google.cloud import discoveryengine_v1 as discoveryengine
+
+# --- ADK Imports ---
 from google.adk.tools.tool_context import ToolContext
 from google.oauth2.credentials import Credentials
 
-import logging
-
-# Load environment variables from the .env file
+# Load environment variables
 load_dotenv()
 
-# --- BigQuery Connection Details (from .env) ---
-# For BigQuery, we primarily need the Project ID and Dataset ID.
-# Authentication is typically handled via Application Default Credentials (ADC)
-# or by setting the GOOGLE_APPLICATION_CREDENTIALS environment variable
-# to point to a service account key file.
+# =======================================================================
+# CONFIGURATION
+# =======================================================================
+
+# BigQuery Config
 BIGQUERY_PROJECT_ID = os.environ.get("BIGQUERY_PROJECT_ID")
 BIGQUERY_DATASET_ID = os.environ.get("BIGQUERY_DATASET_ID")
 
+# Vertex AI Search (Datastore) Config
+DATASTORE_PROJECT_ID = os.environ.get("DATASTORE_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT")
+DATASTORE_LOCATION = os.environ.get("DATASTORE_LOCATION", "global") 
+DATASTORE_ID = os.environ.get("DATASTORE_ID") 
+
+# Auth ID for user-specific context
+AUTH_ID = os.environ.get("AUTH_ID")
+
+logging.basicConfig(level=logging.INFO)
+
+# =======================================================================
+# HELPER FUNCTIONS
+# =======================================================================
 
 def _serialize_rows(rows: list) -> list:
-    """
-    Internal helper to iterate through rows and convert non-serializable
-    types (like date/datetime) to strings in ISO format.
-    BigQuery results are typically google.cloud.bigquery.Row objects,
-    which behave like dictionaries but need explicit conversion for full compatibility.
-    """
+    """Internal helper to serialize BigQuery rows (handling dates/datetimes)."""
     serialized_rows = []
     for row in rows:
         serialized_row = {}
-        # BigQuery Row objects have a 'keys()' method and are iterable by items.
-        # We'll explicitly convert them to a dictionary first to ensure consistent access.
-        if hasattr(row, 'items') and callable(getattr(row, 'items')):
-            # Convert BigQuery Row object to a standard dictionary
-            row_as_dict = dict(row.items())
-        else:
-            # Assume it's already a dictionary or can be treated as one
-            row_as_dict = row
+        # BigQuery Row objects usually act like dicts, but we force conversion 
+        # to ensure compatibility with serialization logic.
+        row_as_dict = dict(row.items()) if hasattr(row, 'items') else row
 
         for key, value in row_as_dict.items():
             if isinstance(value, (datetime.datetime, datetime.date)):
@@ -67,32 +73,139 @@ def _serialize_rows(rows: list) -> list:
 
 
 def _json_to_markdown_table(data_list: list) -> str:
-    """
-    Internal helper to convert a list of dictionaries into a Markdown formatted table.
-    """
+    """Internal helper to convert list of dicts to Markdown table."""
     if not data_list:
         return "No results found."
 
-    # Use the keys from the first dictionary as headers
-    # Convert to list to maintain order and allow indexing if needed
     headers = list(data_list[0].keys())
     header_row = "| " + " | ".join(map(str, headers)) + " |"
     separator_row = "| " + " | ".join(["---"] * len(headers)) + " |"
 
-    # Create data rows
     data_rows = []
     for row_dict in data_list:
-        # Ensure values are retrieved in the same order as headers
         row_values = [str(row_dict.get(header, '')) for header in headers]
         data_rows.append("| " + " | ".join(row_values) + " |")
 
     return "\n".join([header_row, separator_row] + data_rows)
 
-# Retrieve the User's Access Token from ADK Context
-# 'AUTH_ID' is the ID you defined when registering the agent in Gemini Enterprise
-auth_id = os.environ.get("AUTH_ID")
-print(f"Auth ID: {auth_id}")
-logging.info(f"Auth ID: {auth_id}")
+# =======================================================================
+# TOOLS DEFINITION
+# =======================================================================
+
+# 1. VERTEX AI SEARCH TOOL (Retrieval)
+# Implemented as a custom python function using the Discovery Engine API
+# to avoid conflicts with mixing built-in tools and function tools.
+
+def search_data_context(query: str, tool_context: ToolContext = None) -> str:
+    """
+    Searches the Vertex AI Datastore (Knowledge Base) for details about table schemas,
+    column definitions, and relationships.
+    
+    Use this tool BEFORE writing SQL queries to ensure you have the correct table names
+    and column schemas.
+
+    Args:
+        query (str): The search term. E.g., "schema for table users", "details of moodle dataset".
+
+    Returns:
+        str: Relevant text snippets and summary from the documentation files.
+    """
+    if not all([DATASTORE_PROJECT_ID, DATASTORE_LOCATION, DATASTORE_ID]):
+        return "Error: Vertex AI Search configuration (DATASTORE_ID) is missing in .env."
+
+    client = None
+
+    try:
+        # Attempt to get user-specific token from ADK context
+        if tool_context and tool_context.state:
+            access_token = tool_context.state.get(AUTH_ID)
+            if access_token:
+                user_creds = Credentials(token=access_token)
+                client = discoveryengine.SearchServiceClient(credentials=user_creds)
+            else:
+                logging.warning(f"No token found for AUTH_ID {AUTH_ID} in search tool. Using default credentials.")
+                client = discoveryengine.SearchServiceClient()
+        else:
+            client = discoveryengine.SearchServiceClient()
+
+    except Exception as e:
+        logging.warning(f"Error initializing Discovery Engine client with user token: {e}. Fallback to default.")
+        client = discoveryengine.SearchServiceClient()
+
+    try:
+        # The full resource name of the search engine serving config
+        serving_config = client.serving_config_path(
+            project=DATASTORE_PROJECT_ID,
+            location=DATASTORE_LOCATION,
+            data_store=DATASTORE_ID,
+            serving_config="default_search",
+        )
+
+        # Define search specs
+        content_search_spec = discoveryengine.SearchRequest.ContentSearchSpec(
+            snippet_spec=discoveryengine.SearchRequest.ContentSearchSpec.SnippetSpec(
+                return_snippet=True
+            ),
+            summary_spec=discoveryengine.SearchRequest.ContentSearchSpec.SummarySpec(
+                summary_result_count=3,
+                include_citations=True,
+                ignore_adversarial_query=True,
+                ignore_non_summary_seeking_query=True,
+            ),
+        )
+
+        request = discoveryengine.SearchRequest(
+            serving_config=serving_config,
+            query=query,
+            page_size=3, # Top 3 results usually provide enough context
+            content_search_spec=content_search_spec,
+            query_expansion_spec=discoveryengine.SearchRequest.QueryExpansionSpec(
+                condition=discoveryengine.SearchRequest.QueryExpansionSpec.Condition.AUTO,
+            ),
+            spell_correction_spec=discoveryengine.SearchRequest.SpellCorrectionSpec(
+                mode=discoveryengine.SearchRequest.SpellCorrectionSpec.Mode.AUTO
+            ),
+        )
+
+        response = client.search(request)
+
+        formatted_results = []
+        
+        # Check if we have a summary (generative answer provided by Vertex AI Search)
+        if hasattr(response, 'summary') and response.summary.summary_text:
+             formatted_results.append(f"### AI Summary:\n{response.summary.summary_text}\n")
+
+        # Iterate over search results to extract snippets
+        for result in response.results:
+            doc_data = result.document.derived_struct_data
+            title = doc_data.get("title", "Untitled Document")
+            link = doc_data.get("link", "")
+            
+            # Extract snippets
+            snippets = []
+            if hasattr(result.document, "derived_struct_data") and "snippets" in result.document.derived_struct_data:
+                for snippet in result.document.derived_struct_data["snippets"]:
+                    snippets.append(snippet.get("snippet", ""))
+            
+            # If no snippets found in struct data, try to see if result object has direct access or fallback
+            content_preview = "\n".join(snippets) if snippets else "No snippet available."
+            
+            formatted_results.append(
+                f"---\n**Source:** {title}\n**Link:** {link}\n**Relevant Content:**\n...{content_preview}..."
+            )
+
+        if not formatted_results:
+            return f"No detailed context found for query: '{query}'. Try different keywords."
+
+        return "\n\n".join(formatted_results)
+
+    except Exception as e:
+        logging.error(f"Error searching Datastore: {e}")
+        return f"Error retrieving context: {e}"
+
+
+# 2. BIGQUERY TOOL (Execution)
+# This is a custom function tool, which ADK supports natively.
 
 def query_bigquery(sql_query: str, tool_context: ToolContext) -> dict:
     """
@@ -106,72 +219,49 @@ def query_bigquery(sql_query: str, tool_context: ToolContext) -> dict:
         dict: A dictionary containing a 'results_markdown' key with the data
               as a Markdown table string on success, or an 'error' key on failure.
     """
-    # Ensure both PROJECT_ID and DATASET_ID are configured
-    if not all([BIGQUERY_PROJECT_ID, BIGQUERY_DATASET_ID]):
-        missing_vars = []
-        if not BIGQUERY_PROJECT_ID:
-            missing_vars.append("BIGQUERY_PROJECT_ID")
-        if not BIGQUERY_DATASET_ID:
-            missing_vars.append("BIGQUERY_DATASET_ID")
-        return {"error": f"BigQuery connection details are not fully configured in the environment. "
-                         f"Please set {', '.join(missing_vars)} in your .env file."}
+    # Validation
+    if not BIGQUERY_PROJECT_ID:
+        return {"error": "BIGQUERY_PROJECT_ID is not configured in .env."}
     
     client = None
 
     try: 
-        #Get access token from AUTH_ID authorization
-        access_token = tool_context.state.get(auth_id)
-        
-        #Create Credentials from the token
-        user_creds = Credentials(token=access_token)
+        # Attempt to get user-specific token from ADK context
+        if tool_context and tool_context.state:
+            access_token = tool_context.state.get(AUTH_ID)
+            if access_token:
+                user_creds = Credentials(token=access_token)
+                client = bigquery.Client(project=BIGQUERY_PROJECT_ID, credentials=user_creds)
+            else:
+                logging.warning(f"No token found for AUTH_ID {AUTH_ID}. Using default credentials.")
+                client = bigquery.Client(project=BIGQUERY_PROJECT_ID)
+        else:
+            client = bigquery.Client(project=BIGQUERY_PROJECT_ID)
 
-        # Initialize BigQuery client with the project ID and the credentials.
-        client = bigquery.Client(
-            project=BIGQUERY_PROJECT_ID,
-            credentials=user_creds
-        )
-
-    except:        
-        logging.error(f"User authorization token not found for ID: {auth_id}")
-        logging.error(f"Continuing with default agent service account")
-        # Continue with default access
+    except Exception as e:        
+        logging.warning(f"Error initializing BigQuery client with user token: {e}. Fallback to default.")
         client = bigquery.Client(project=BIGQUERY_PROJECT_ID)
         
     try:
-        # Run the query. The .result() method blocks until the query completes.
+        # Run the query
         query_job = client.query(sql_query)
         result_iterator = query_job.result()
 
-        # Iterate through the results. Each row is a google.cloud.bigquery.Row object.
-        results_as_list_of_dicts = []
-        for row in result_iterator:
-            # Convert each Row object into a standard Python dictionary for consistency
-            # with _serialize_rows and _json_to_markdown_table.
-            results_as_list_of_dicts.append(dict(row.items()))
-
-        # First, serialize the data to handle date/datetime objects correctly.
-        serialized_result = _serialize_rows(results_as_list_of_dicts)
-
-        # Then, convert the entire result set into a single Markdown table string.
+        results_as_list = [dict(row.items()) for row in result_iterator]
+        serialized_result = _serialize_rows(results_as_list)
         markdown_output = _json_to_markdown_table(serialized_result)
 
-        # Return the final formatted string in the response dictionary.
         return {"results_markdown": markdown_output}
 
     except GoogleAPIError as e:
-        # Catch BigQuery specific API errors
         return {
             "error": "Failed to execute SQL query in BigQuery.",
             "details": f"BigQuery API Error: {e}",
             "sql_sent": sql_query
         }
     except Exception as e:
-        # Catch any other unexpected errors
         return {
-            "error": "An unexpected error occurred during BigQuery query execution.",
+            "error": "An unexpected error occurred during execution.",
             "details": f"Error: {e}",
             "sql_sent": sql_query
         }
-    finally:
-        # The BigQuery client object does not typically require an explicit close
-        pass

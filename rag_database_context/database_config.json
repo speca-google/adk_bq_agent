@@ -1,0 +1,12 @@
+{
+  "project_id": "speca-sandbox-argolis",
+  "datasets": [
+    { "name": "finance", "tables": [] },
+    { "name": "procurement", "tables": [] },
+    { "name": "agentspace_analytics", "tables": [] },
+    { "name": "bq_public_data", "tables": [] },
+    { "name": "moodle_data", "tables": [] },
+    { "name": "google_trends", "tables": [] },
+    { "name": "legal", "tables": [] }
+  ]
+}
