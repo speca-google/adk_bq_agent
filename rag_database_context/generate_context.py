@@ -62,7 +62,7 @@ LLM_MODEL = os.environ.get("LLM_MODEL")
 OUTPUT_DIRECTORY = os.path.join(CURRENT_DIR, "database_context_details")
 
 # The output filename for the consolidated summary context (Inside adk_bq_agent)
-SUMMARY_FILENAME = os.path.join(TARGET_AGENT_DIR, "database_context.txt")
+SUMMARY_FILENAME = os.path.join(CURRENT_DIR, "database_context.txt")
 
 # =======================================================================
 # HELPER FUNCTIONS - CONFIG & METADATA
