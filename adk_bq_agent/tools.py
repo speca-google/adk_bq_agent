@@ -118,7 +118,7 @@ def search_data_context(query: str, tool_context: ToolContext = None) -> str:
     try:
         # Attempt to get user-specific token from ADK context
         if tool_context and tool_context.state:
-            access_token = tool_context.state.get(AUTH_ID)
+            access_token = tool_context.state.get("AUTH_ID")
             if access_token:
                 user_creds = Credentials(token=access_token)
                 client = discoveryengine.SearchServiceClient(credentials=user_creds)
